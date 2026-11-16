@@ -72,7 +72,7 @@ To test sending the scheduled poll immediately without waiting for cron:
 
 ## Running 24/7 on Proxmox LXC Container / Linux Server
 
-### Option A: Direct LXC Service (systemd - Recommended for minimal resource usage)
+### Option A: Direct LXC Service (systemd - Recommended)
 
 Inside your Proxmox Debian/Ubuntu LXC container:
 
@@ -82,13 +82,10 @@ Inside your Proxmox Debian/Ubuntu LXC container:
    cd /opt/whatsappbot
    ```
 
-2. **Copy `.env` and `session.db` (if migrating existing session):**
+2. **Prepare configuration:**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
-   nano .env
    ```
-   *(If you already have a logged-in `session.db`, scp or copy it into `/opt/whatsappbot/session.db` to avoid re-scanning the QR code).*
 
 3. **Build the binary:**
    ```bash
@@ -96,7 +93,22 @@ Inside your Proxmox Debian/Ubuntu LXC container:
    chmod +x wa-poll-bot
    ```
 
-4. **Create `/etc/systemd/system/wa-poll-bot.service`:**
+4. **First-time interactive run (Pair WhatsApp):**
+   ```bash
+   ./wa-poll-bot
+   ```
+   - A QR code will display directly in your Proxmox container terminal.
+   - On your phone: open **WhatsApp** -> **Settings** -> **Linked Devices** -> **Link a Device** and scan the QR code.
+   - Once linked, a fresh `session.db` is generated and the terminal will print your groups and their JIDs (`... @g.us`).
+   - Press `Ctrl + C` once paired.
+
+5. **Configure `.env` with your group JID:**
+   ```bash
+   nano .env
+   ```
+   Paste the target group JID (e.g. `120363...45@g.us`) into `TARGET_GROUP_ID`.
+
+6. **Create `/etc/systemd/system/wa-poll-bot.service`:**
    ```ini
    [Unit]
    Description=WhatsApp Daily & On-Demand Poll Bot
@@ -114,13 +126,13 @@ Inside your Proxmox Debian/Ubuntu LXC container:
    WantedBy=multi-user.target
    ```
 
-5. **Enable and start the service:**
+7. **Enable and start the service:**
    ```bash
    systemctl daemon-reload
    systemctl enable --now wa-poll-bot
    ```
 
-6. **Monitor logs:**
+8. **Monitor live logs:**
    ```bash
    journalctl -u wa-poll-bot -f
    ```
