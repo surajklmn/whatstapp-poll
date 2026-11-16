@@ -1,0 +1,8 @@
+services:
+  whatsapp-poll-bot:
+    build: .
+    container_name: whatsapp-poll-bot
+    restart: unless-stopped
+    volumes:
+      - ./.env:/app/.env
+      - ./session.db:/app/session.db

@@ -1,0 +1,33 @@
+# Binaries and build artifacts
+wa-poll-bot*
+*.exe
+*.test
+*.out
+bin/
+dist/
+
+# Archives and temporary bundles
+*.tar.gz
+*.tar
+*.zip
+*.gz
+
+# Sensitive WhatsApp credentials & SQLite database
+session.db*
+*.db
+*.db-shm
+*.db-wal
+
+# Environment files and secrets (keep .env.example)
+.env
+.env.local
+.env.*
+!.env.example
+
+# OS & Editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
